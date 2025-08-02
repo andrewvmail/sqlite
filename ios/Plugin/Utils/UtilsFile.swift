@@ -147,14 +147,14 @@ class UtilsFile {
 
     class func getFolderURL(folderPath: String) throws -> URL {
         if folderPath.hasPrefix("group://") {
-          let subPath = folderPath.replacingOccurrences(of: "group://", with: "")
-          guard let bundleID = Bundle.main.bundleIdentifier,
-                let containerURL = FileManager.default.containerURL(
-                  forSecurityApplicationGroupIdentifier: "group.\(bundleID)"
-                )
-          else {
-            throw UtilsFileError.getFolderURLFailed(message: "App Group container URL not found.")
-          }
+            let subPath = folderPath.replacingOccurrences(of: "group://", with: "")
+            guard let appGroupID = Bundle.main.object(forInfoDictionaryKey: "APP_GROUP_ID") as? String,
+            let containerURL = FileManager.default.containerURL(
+                forSecurityApplicationGroupIdentifier: appGroupID
+            )
+            else {
+                throw UtilsFileError.getFolderURLFailed(message: "App Group container URL not found.")
+            }
           return containerURL.appendingPathComponent(subPath)
         }
         do {
